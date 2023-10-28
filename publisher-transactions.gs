@@ -8,12 +8,11 @@ function pullJSON() {
     let startDate = dates[0]
     let endDate = dates[1]
 
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var sheets = ss.getSheets();
-    var sheet = ss.getActiveSheet();
-    var url="https://api.awin.com/publishers/"+advertiserId+"/transactions/?startDate="+startDate+"T00%3A00%3A00&endDate="+endDate+"T00%3A00%3A00&timezone=UTC";     
+    let ss = SpreadsheetApp.getActiveSpreadsheet();
+    let sheets = ss.getSheets();
+    let sheet = ss.getActiveSheet();
+    let url="https://api.awin.com/publishers/"+advertiserId+"/transactions/?startDate="+startDate+"T00%3A00%3A00&endDate="+endDate+"T00%3A00%3A00&timezone=UTC";     
 
-      
     const headers = {
       'Authorization': 'Bearer ' + accessToken
     };
@@ -24,28 +23,21 @@ function pullJSON() {
       'headers': headers
     };
     
-    Logger.log(url)
-    var response = UrlFetchApp.fetch(url, options); 
-    var dataSet = JSON.parse(response.getContentText()); // parse the JSON
-    // Logger.log(dataSet)
+    let response = UrlFetchApp.fetch(url, options); 
+    let dataSet = JSON.parse(response.getContentText()); // parse the JSON
     // Logger.log(JSON.stringify(dataSet, null, 2))
     orderByDateDescending(dataSet)
-    var rows = [];
+    let rows = [];
     let data;
 
     for (i = 0; i < dataSet.length; i++) {
       data = dataSet[i];
       rows.push([data.transactionDate, data.commissionAmount.amount, data.saleAmount.amount]); //your JSON entities here
     }
-    // dataRange = sheet.getRange(2, 1, rows.length, 3); // 3 Denotes total number of entites
-    // dataRange.setValues(rows);
-
-    var numRows = rows.length;
-    var numCols = 3;
+    let numRows = rows.length;
+    let numCols = 3;
     sheet.insertRows(2, numRows); // Insert new rows at row 2
     sheet.getRange(2, 1, numRows, numCols).setValues(rows);
-
-
   }
   catch(error){
     Logger.log('An error occurred:' + error)
@@ -53,8 +45,8 @@ function pullJSON() {
 }
 
 function getDates() {
-  var today = new Date();
-  var start = new Date(today); // Create a new date object with the same date and time as today
+  let today = new Date();
+  let start = new Date(today); // Create a new date object with the same date and time as today
   start.setDate(today.getDate() - 1); // yesterday
   
   // Format the dates as strings (e.g., "yyyy-MM-dd")
@@ -67,8 +59,8 @@ function getDates() {
 function orderByDateDescending(json) {
   json.sort(function(a, b) {
     // Extract the date strings from each object
-    var dateA = new Date(a.transactionDate);
-    var dateB = new Date(b.transactionDate);
+    let dateA = new Date(a.transactionDate);
+    let dateB = new Date(b.transactionDate);
 
     // Compare the dates in descending order
     return dateB - dateA;
